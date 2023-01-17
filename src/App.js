@@ -4,7 +4,7 @@ import axios from 'axios';
 import qs from 'qs';
 
 function App() {
-  const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+  const CLIENT_ID = "bff30eecd6274d27a966edb890fc9f57";
   const ENDPOINT = "https://accounts.spotify.com/authorize";
   const REDIRECT_URI = "http://localhost:3000";
   const SCOPES = ['user-top-read','user-read-private','user-read-email','playlist-modify-private', 'playlist-modify-public', 'playlist-read-private'];
@@ -13,8 +13,6 @@ function App() {
   const [shortData, setShortData] = useState({});
   const [mediumData, setMediumData] = useState({});
   const [longData, setLongData] = useState({});
-
-  const [shouldShow, setShow] = useState(false);
 
   const getReturnparameters = (search) => {
     const url = search.substring(1);
@@ -41,7 +39,7 @@ function App() {
           data: qs.stringify({grant_type: "authorization_code", code: localStorage.getItem("authCode"), redirect_uri: REDIRECT_URI}), 
           headers: {
             "Content-Type": "application/x-www-form-urlencoded", 
-            Authorization: `Basic ${process.env.REACT_APP_BASE_64_ENCODING}`},
+            Authorization: `Basic YmZmMzBlZWNkNjI3NGQyN2E5NjZlZGI4OTBmYzlmNTc6YjllNTlmZDg0MWNkNDRhMWE1NDNjYTQ0MTRlZmRlMjc=`},
           }).then(response => {
               localStorage.setItem("authToken",response.data.access_token);
               axios({
@@ -111,7 +109,7 @@ function App() {
       let i=0;
       let foundID = false;
       while(!foundID && i < response.data.total ){
-        if(response.data.items[i].name == "Top 50 of the Month"){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
+        if(response.data.items[i].name === "Top 50 of the Month"){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
           let playlistID = response.data.items[i].id;
           axios({ // get the specific playlist
             method: "get", 
@@ -191,7 +189,7 @@ function App() {
       let i=0;
       let foundID = false;
       while(!foundID && i < response.data.total ){
-        if(response.data.items[i].name == "Top 50 of 6 Months"){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
+        if(response.data.items[i].name === "Top 50 of 6 Months"){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
           let playlistID = response.data.items[i].id;
           axios({ // get the specific playlist
             method: "get", 
@@ -272,7 +270,7 @@ function App() {
       let i=0;
       let foundID = false;
       while(!foundID && i < response.data.total ){
-        if(response.data.items[i].name == "Top 50 of All-time"){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
+        if(response.data.items[i].name === "Top 50 of All-time"){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
           let playlistID = response.data.items[i].id;
           axios({ // get the specific playlist
             method: "get", 
@@ -342,7 +340,7 @@ function App() {
   };
 
   const showPlaylists = () => {
-    if(longData.items != undefined){
+    if(longData.items !== undefined){
       return(
         <>
           <div className="three-inline-buttons">
