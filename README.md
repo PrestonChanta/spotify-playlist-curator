@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Top Songs Playlist Curator
+
+Shows and creates your spotify top 50 songs of the month, previous six months, and all-time.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
