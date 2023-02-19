@@ -350,22 +350,24 @@ function App() {
               <a className="button" onClick={() => {makeLongPlaylist()}}>Curate Top 50 of All-Time</a>
             </p>
           </div>
+          
           <div className='Playlist'>
-            <div className='Short-playlist'>
-              {shortData?.items ? shortData.items.map((item) => 
-              <>
-              <div className="track" key={item}>
-                <img src={item.album.images[2].url}/>
-                <a style={{fontSize: '23px'}}>{item.name}
-                  <br/>
-                  {item?.artists ? item.artists.map((names,j) => <><span style={{fontSize: '15px'}}>{names.name}</span>
-                  {Object.keys(item.artists).length > 1 && j < Object.keys(item.artists).length-1 ? (<span style={{fontSize: '15px'}}>, </span>) : null}
-                  </>) : null}
-                </a>
+              <div className='Playlist-list'>
+                {shortData?.items ? shortData.items.map((item,i) => 
+                <>
+                  <div className="track" key={i}>
+                    <img src={item.album.images[2].url}/>
+                    <a style={{fontSize: '23px'}}>{item.name}
+                      <br/>
+                      {item?.artists ? item.artists.map((names,j) => <><span style={{fontSize: '15px'}}>{names.name}</span>
+                      {Object.keys(item.artists).length > 1 && j < Object.keys(item.artists).length-1 ? (<span style={{fontSize: '15px'}}>, </span>) : null}
+                      </>) : null}
+                    </a>
+                  </div>
+                </>) : null}
               </div>
-            </>) : null}
-            </div>
-              <div className='Medium-playlist'>
+
+              <div className='Playlist-list'>
                 {mediumData?.items ? mediumData.items.map((item,i) => 
                 <>
                   <div className="track" key={i}>
@@ -380,7 +382,7 @@ function App() {
                 </>) : null}
               </div>
 
-              <div className='Long-playlist'>
+              <div className='Playlist-list'>
                 {longData?.items ? longData.items.map((item) => 
                 <>
                   <div className="track" key={item}>
@@ -394,12 +396,15 @@ function App() {
                   </div>
                 </>) : null}
               </div>
+
           </div>
         </>
       )
     }
     return null;
   }
+
+  
   return (
     <div className="App">
       <header className="App-header">
