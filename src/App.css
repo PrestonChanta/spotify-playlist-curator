@@ -42,10 +42,6 @@
   background-color: rgba(211, 211, 211, 0.342);
 }
 
-.track:focus {
-  background-color: rgba(211, 211, 211, 0.11);
-}
-
 .three-inline-buttons .button {
   margin: 100px ;
   background-color: rgb(128, 125, 125);
