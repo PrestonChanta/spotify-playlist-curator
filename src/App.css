@@ -43,7 +43,8 @@
 }
 
 .three-inline-buttons .button {
-  margin: 100px ;
+  margin: 100px;
+  flex: calc(100%/3);
   background-color: rgb(128, 125, 125);
   border:  20px solid rgb(128, 125, 125);
   border-radius: 25px;
