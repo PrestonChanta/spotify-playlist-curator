@@ -98,7 +98,28 @@ function App() {
     window.location = `${ENDPOINT}?response_type=code&client_id=${CLIENT_ID}&scope=${SCOPES_PARAMETER}&redirect_uri=${REDIRECT_URI}`;
   };
 
-  const makeShortPlaylist = () => {
+const makePlaylist = (type) => {
+  let playlistType, playlistName, playlistDescription;
+  switch(type){
+    case "short":
+        playlistType = shortData;
+        playlistName = "Top 50 of the Month";
+        playlistDescription = "Your Top 50 of the Month !";
+        break;
+      case "medium":
+        playlistType = mediumData;
+        playlistName = "Top 50 of 6 Months";
+        playlistDescription = "Your Top 50 of 6 Months !";
+        break;
+      case "long":
+        playlistType = longData;
+        playlistName =  "Top 50 of All-time";
+        playlistDescription = "Your Top 50 of All-time !";
+        break;
+      default:
+        return null;
+    }
+    
     axios({ // get users playlists
       method: "get",
       url: "https://api.spotify.com/v1/me/playlists?limit=50",
@@ -109,7 +130,7 @@ function App() {
       let i=0;
       let foundID = false;
       while(!foundID && i < response.data.total ){
-        if(response.data.items[i].name === "Top 50 of the Month"){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
+        if(response.data.items[i].name === playlistName){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
           let playlistID = response.data.items[i].id;
           axios({ // get the specific playlist
             method: "get", 
@@ -133,7 +154,7 @@ function App() {
               }).then(response => {
                 axios({ // add tracks
                   method: "post", 
-                  url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks?uris=${shortData?.items ? shortData.items.map((item) => (`${item.uri}`)) : null}`, 
+                  url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks?uris=${playlistType?.items ? playlistType.items.map((item) => (`${item.uri}`)) : null}`, 
                   headers: {
                     Authorization: `Bearer ${localStorage.getItem("authToken")}`},
                   }).catch((err) => {
@@ -155,15 +176,15 @@ function App() {
             method: "post", 
             url: `https://api.spotify.com/v1/users/${localStorage.getItem("userID")}/playlists`, 
             data: {
-              name: "Top 50 of the Month", 
-              description: "Your Top 50 of the Month !", 
+              name: playlistName, 
+              description: playlistDescription, 
               public: false}, 
             headers: {
               Authorization: `Bearer ${localStorage.getItem("authToken")}`},
             }).then(response => {
               axios({
                 method: "post", 
-                url: `https://api.spotify.com/v1/playlists/${response.data.id}/tracks?uris=${shortData?.items ? shortData.items.map((item) => (`${item.uri}`)) : null}`, 
+                url: `https://api.spotify.com/v1/playlists/${response.data.id}/tracks?uris=${playlistType?.items ? playlistType.items.map((item) => (`${item.uri}`)) : null}`, 
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("authToken")}`},
                 }).catch((err) => {
@@ -176,168 +197,8 @@ function App() {
     }).catch((err) => {
         console.log(err);
     });
-  };
-
-  const makeMediumPlaylist = () => {
-    axios({ // get users playlists
-      method: "get",
-      url: "https://api.spotify.com/v1/me/playlists?limit=50",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-      }
-    }).then(response => {
-      let i=0;
-      let foundID = false;
-      while(!foundID && i < response.data.total ){
-        if(response.data.items[i].name === "Top 50 of 6 Months"){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
-          let playlistID = response.data.items[i].id;
-          axios({ // get the specific playlist
-            method: "get", 
-            url: `https://api.spotify.com/v1/playlists/${playlistID}`,
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`},
-            }).then(response => { // delete tracks
-              let playlistTracks = [];
-              for(let j=0; j < response.data.tracks.total; j++){
-                playlistTracks.push({"uri": response.data.tracks.items[j].track.uri});
-              }
-              axios({ 
-                method: "delete",
-                url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
-                data: {
-                  tracks: playlistTracks
-                },
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-                }
-              }).then(response => {
-                axios({ // add tracks
-                  method: "post", 
-                  url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks?uris=${mediumData?.items ? mediumData.items.map((item) => (`${item.uri}`)) : null}`, 
-                  headers: {
-                    Authorization: `Bearer ${localStorage.getItem("authToken")}`},
-                  }).catch((err) => {
-                      console.log(err);
-                  });
-              }).catch((err) => {
-                  console.log(err);
-              });
-            }).catch((err) => {
-                console.log(err);
-            });
-            foundID = true;
-        }
-        i++
-      }
-      if(!foundID) // if playlist doesn't exist, make the playlist
-        {
-          axios({
-            method: "post", 
-            url: `https://api.spotify.com/v1/users/${localStorage.getItem("userID")}/playlists`, 
-            data: {
-              name: "Top 50 of 6 Months", 
-              description: "Your Top 50 of 6 Months !", 
-              public: false}, 
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`},
-            }).then(response => {
-              axios({
-                method: "post", 
-                url: `https://api.spotify.com/v1/playlists/${response.data.id}/tracks?uris=${mediumData?.items ? mediumData.items.map((item) => (`${item.uri}`)) : null}`, 
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("authToken")}`},
-                }).catch((err) => {
-                    console.log(err);
-                });
-            }).catch((err) => {
-                console.log(err);
-            });
-        }
-    }).catch((err) => {
-        console.log(err);
-    });
-  };
-
-  // make playlist of the users all-time 50 songs
-  const makeLongPlaylist = () => {
-    axios({ // get users playlists
-      method: "get",
-      url: "https://api.spotify.com/v1/me/playlists?limit=50",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-      }
-    }).then(response => {
-      let i=0;
-      let foundID = false;
-      while(!foundID && i < response.data.total ){
-        if(response.data.items[i].name === "Top 50 of All-time"){ // checks if playlist already exists, if it does, delete tracks in playlist and add new tracks
-          let playlistID = response.data.items[i].id;
-          axios({ // get the specific playlist
-            method: "get", 
-            url: `https://api.spotify.com/v1/playlists/${playlistID}`,
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`},
-            }).then(response => { // delete tracks
-              let playlistTracks = [];
-              for(let j=0; j < response.data.tracks.total; j++){
-                playlistTracks.push({"uri": response.data.tracks.items[j].track.uri});
-              }
-              axios({ 
-                method: "delete",
-                url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
-                data: {
-                  tracks: playlistTracks
-                },
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-                }
-              }).then(response => {
-                axios({ // add tracks
-                  method: "post", 
-                  url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks?uris=${longData?.items ? longData.items.map((item) => (`${item.uri}`)) : null}`, 
-                  headers: {
-                    Authorization: `Bearer ${localStorage.getItem("authToken")}`},
-                  }).catch((err) => {
-                      console.log(err);
-                  });
-              }).catch((err) => {
-                  console.log(err);
-              });
-            }).catch((err) => {
-                console.log(err);
-            });
-            foundID = true;
-        }
-        i++
-      }
-      if(!foundID) // if playlist doesn't exist, make the playlist
-        {
-          axios({
-            method: "post", 
-            url: `https://api.spotify.com/v1/users/${localStorage.getItem("userID")}/playlists`, 
-            data: {
-              name: "Top 50 of All-time", 
-              description: "Your Top 50 of All-time !", 
-              public: false}, 
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`},
-            }).then(response => {
-              axios({
-                method: "post", 
-                url: `https://api.spotify.com/v1/playlists/${response.data.id}/tracks?uris=${longData?.items ? longData.items.map((item) => (`${item.uri}`)) : null}`, 
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("authToken")}`},
-                }).catch((err) => {
-                    console.log(err);
-                });
-            }).catch((err) => {
-                console.log(err);
-            });
-        }
-    }).catch((err) => {
-        console.log(err);
-    });
-  };
+ 
+}
 
   const displayPlaylists = (type) => {
     let playlistType;
@@ -380,9 +241,9 @@ function App() {
         <>
           <div className="three-inline-buttons">
             <p>
-              <a className="button" onClick={() => {makeShortPlaylist()}}>Curate Top 50 of the Month</a>
-              <a className="button" onClick={() => {makeMediumPlaylist()}}>Curate Top 50 of 6 Months</a>
-              <a className="button" onClick={() => {makeLongPlaylist()}}>Curate Top 50 of All-Time</a>
+              <a className="button" onClick={() => {makePlaylist("short")}}>Curate Top 50 of the Month</a>
+              <a className="button" onClick={() => {makePlaylist("medium")}}>Curate Top 50 of 6 Months</a>
+              <a className="button" onClick={() => {makePlaylist("long")}}>Curate Top 50 of All-Time</a>
             </p>
           </div>
           
