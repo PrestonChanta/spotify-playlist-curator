@@ -220,7 +220,8 @@ const makePlaylist = (type) => {
         <div className='Playlist-list'>
           {playlistType?.items ? playlistType.items.map((item,i) => 
           <>
-            <div className="track" key={i}>
+            <div className="track" key={i} onClick={() => {window.open(item.uri,"_self")}}>
+              <a style={{fontSize: '22px', fontWeight: 'lighter', position: 'relative', top: '32%'}}>{i+1}</a>
               <img src={item.album.images[2].url}/>
               <a style={{fontSize: '23px'}}>{item.name}
                 <br/>

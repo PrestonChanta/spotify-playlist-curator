@@ -32,14 +32,15 @@
 
 .track {
   display: grid;
-  align-items: flex-start; 
-  grid-template-columns: 0.23fr 1fr auto;
+  align-items: flex; 
+  grid-template-columns: 2vw 4.5vw auto;
   column-gap: 1px;
   padding: 10px 50px;
 }
 
 .track:hover {
   background-color: rgba(211, 211, 211, 0.342);
+  cursor: pointer;
 }
 
 .three-inline-buttons .button {
