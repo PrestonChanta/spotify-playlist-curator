@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 import qs from 'qs';
+import logo from './asset/pagelogo.png';
 
 function App() {
   const CLIENT_ID = "bff30eecd6274d27a966edb890fc9f57";
@@ -221,7 +222,7 @@ const makePlaylist = (type) => {
           {playlistType?.items ? playlistType.items.map((item,i) => 
           <>
             <div className="track" key={i} onClick={() => {window.open(item.uri,"_self")}}>
-              <a style={{fontSize: '22px', fontWeight: 'lighter', position: 'relative', top: '32%'}}>{i+1}</a>
+              <a style={{fontSize: '22px', fontWeight: 'lighter', position: 'relative', top: '32%', paddingRight: '30px'}}>{i+1}</a>
               <img src={item.album.images[2].url}/>
               <a style={{fontSize: '23px'}}>{item.name}
                 <br/>
@@ -240,6 +241,18 @@ const makePlaylist = (type) => {
     if(longData.items !== undefined){
       return(
         <>
+        <header>
+          <img src={logo} alt='Spotify' width={500} style={{paddingTop: '20px', paddingBottom: '3px'}}/>
+        </header>
+        <body>
+          
+          
+          <div className='Playlist'>
+            {displayPlaylists('short')}
+            {displayPlaylists('medium')}
+            {displayPlaylists('long')}
+          </div>
+
           <div className="three-inline-buttons">
             <p>
               <a className="button" onClick={() => {makePlaylist("short")}}>Curate Top 50 of the Month</a>
@@ -247,28 +260,24 @@ const makePlaylist = (type) => {
               <a className="button" onClick={() => {makePlaylist("long")}}>Curate Top 50 of All-Time</a>
             </p>
           </div>
-          
-          <div className='Playlist'>
-            {displayPlaylists('short')}
-            {displayPlaylists('medium')}
-            {displayPlaylists('long')}
-          </div>
+        </body> 
         </>
       )
     }
-    return null;
+    return (
+    
+      <>
+        <div className='App-header'>
+          <img src={logo} alt='Spotify' width={1000} />
+          <p className='button' onClick={() => {handleLogin()}}>Login to Spotify</p>
+        </div>
+      </>
+    
+    );
   }
 
   
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1 style={{color: "rgb(30, 215, 96)"}}>Spotify Top Songs Playlist Curator</h1>
-        {showPlaylists()}
-        <p className='button' onClick={() => {handleLogin()}}>Login to Spotify</p>
-      </header>
-    </div>
-  );
+  return showPlaylists();
 }
 
 export default App;
